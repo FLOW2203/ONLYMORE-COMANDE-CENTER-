@@ -139,6 +139,12 @@ export default function Home() {
                   Sync: {lastSync.toLocaleTimeString('fr-FR')}
                 </span>
               )}
+              <a
+                href="/actions"
+                className="px-3 py-1.5 rounded-lg border border-border bg-white/[0.03] hover:bg-white/[0.06] text-xs font-mono text-muted hover:text-text transition-colors"
+              >
+                Commande Center
+              </a>
               <button
                 onClick={fetchData}
                 disabled={loading}

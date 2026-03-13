@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'ONLYMORE Social Calendar',
-  description: 'Calendrier éditorial ONLYMORE Group — Vue temps réel des posts depuis Notion',
+  title: 'ONLYMORE Commande Center',
+  description: 'Centre de commande ONLYMORE Group — Calendrier éditorial + Suivi des actions',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
