@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
+import Link from 'next/link'
 import { Post } from '@/types/post'
 import CalendarView from '@/components/CalendarView'
 import ListView from '@/components/ListView'
@@ -139,6 +140,12 @@ export default function Home() {
                   Sync: {lastSync.toLocaleTimeString('fr-FR')}
                 </span>
               )}
+              <Link
+                href="/linkedin"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#0A66C2]/30 bg-[#0A66C2]/10 hover:bg-[#0A66C2]/20 text-xs font-mono text-[#0A66C2] transition-colors"
+              >
+                in LinkedIn Strategy
+              </Link>
               <button
                 onClick={fetchData}
                 disabled={loading}
