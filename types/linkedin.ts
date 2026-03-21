@@ -1,9 +1,13 @@
+export type StoryArchetype =
+  | 'wound-lesson'
+  | 'underdog-victory'
+  | 'revelation'
+  | 'infrastructure-play'
+
 export type LinkedInPostType =
-  | 'thought-leadership'
+  | StoryArchetype
   | 'comment'
-  | 'company-update'
-  | 'storytelling'
-  | 'industry-insight'
+  | 'carousel'
 
 export type EntityKey =
   | 'COLHYBRI'
@@ -19,11 +23,41 @@ export interface HashtagSet {
   geo: string[]
 }
 
-export interface PostTemplate {
-  id: LinkedInPostType
+export interface ArchetypeTemplate {
+  id: StoryArchetype
   label: string
   labelFR: string
+  tagline: string
+  bestFor: string
+  exampleAngle: string
   sections: { placeholder: string; hint: string }[]
+}
+
+export interface HookPattern {
+  id: string
+  label: string
+  example: string
+}
+
+export interface TacticalTechnique {
+  id: string
+  label: string
+  labelFR: string
+  description: string
+  usage: string
+  example?: string
+}
+
+export interface ProprietaryConcept {
+  entity: string
+  fr: string
+  en: string
+}
+
+export interface CTAType {
+  type: string
+  when: string
+  example: string
 }
 
 export interface AlgorithmSignal {
@@ -36,4 +70,10 @@ export interface QualityCheck {
   id: string
   label: string
   validate?: (text: string) => boolean
+}
+
+export interface CarouselSlide {
+  number: number
+  purpose: string
+  maxWords: number
 }
