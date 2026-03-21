@@ -146,6 +146,12 @@ export default function Home() {
               >
                 in LinkedIn Strategy
               </Link>
+              <Link
+                href="/logo"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#D4A843]/30 bg-[#D4A843]/10 hover:bg-[#D4A843]/20 text-xs font-mono text-[#D4A843] transition-colors"
+              >
+                Logo Creator
+              </Link>
               <button
                 onClick={fetchData}
                 disabled={loading}
