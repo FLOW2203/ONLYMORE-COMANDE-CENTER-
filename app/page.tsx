@@ -141,6 +141,18 @@ export default function Home() {
                 </span>
               )}
               <Link
+                href="/herald"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#00D4AA]/30 bg-[#00D4AA]/10 hover:bg-[#00D4AA]/20 text-xs font-mono text-[#00D4AA] transition-colors"
+              >
+                HERALD Social
+              </Link>
+              <Link
+                href="/osint"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#FF6B35]/30 bg-[#FF6B35]/10 hover:bg-[#FF6B35]/20 text-xs font-mono text-[#FF6B35] transition-colors"
+              >
+                OSINT Prospector
+              </Link>
+              <Link
                 href="/linkedin"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#0A66C2]/30 bg-[#0A66C2]/10 hover:bg-[#0A66C2]/20 text-xs font-mono text-[#0A66C2] transition-colors"
               >
