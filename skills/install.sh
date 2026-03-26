@@ -14,6 +14,7 @@ SKILLS=(
   "onlymore-game-creator"
   "onlymore-investor"
   "onlymore-n8n-automation"
+  "onlymore-stitch-design"
 )
 
 echo "🧠 Installation des skills ONLYMORE..."

@@ -13,6 +13,7 @@ Skills personnalisés pour accélérer le développement des filiales : COLHYBRI
 | `onlymore-game-creator` | Générateur de mini-jeux HTML5 pour engagement communautaire | GROUPE |
 | `onlymore-investor` | Génération pitch decks, dossiers financiers, outreach investisseurs | GROUPE |
 | `onlymore-n8n-automation` | Workflows n8n + MCP pour automatisation inter-filiales | GROUPE |
+| `onlymore-stitch-design` | Google Stitch MCP — design system IA → React components | GROUPE |
 
 ## Installation
 
@@ -34,6 +35,7 @@ cp -r colhybri-security ~/.claude/skills/
 cp -r onlymore-game-creator ~/.claude/skills/
 cp -r onlymore-investor ~/.claude/skills/
 cp -r onlymore-n8n-automation ~/.claude/skills/
+cp -r onlymore-stitch-design ~/.claude/skills/
 ```
 
 ## Utilisation
@@ -52,7 +54,8 @@ onlymore-skills/
 ├── colhybri-security/SKILL.md
 ├── onlymore-game-creator/SKILL.md
 ├── onlymore-investor/SKILL.md
-└── onlymore-n8n-automation/SKILL.md
+├── onlymore-n8n-automation/SKILL.md
+└── onlymore-stitch-design/SKILL.md
 ```
 
 ## Licence
