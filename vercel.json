@@ -1,9 +1,6 @@
 {
-  "buildCommand": "next build",
-  "outputDirectory": ".next",
-  "framework": "nextjs",
-  "env": {
-    "NOTION_API_KEY": "@notion_api_key",
-    "NOTION_DATABASE_ID": "@notion_database_id"
-  }
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "framework": null
 }
