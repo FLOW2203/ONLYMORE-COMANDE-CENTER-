@@ -1,10 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout'
-import Dashboard from './pages/Dashboard'
-import Queue from './pages/Queue'
-import Workflows from './pages/Workflows'
-import Generate from './pages/Generate'
-import Reviews from './pages/Reviews'
+import Dashboard from './views/Dashboard'
+import Queue from './views/Queue'
+import Workflows from './views/Workflows'
+import Generate from './views/Generate'
+import Reviews from './views/Reviews'
 
 export default function App() {
   return (
