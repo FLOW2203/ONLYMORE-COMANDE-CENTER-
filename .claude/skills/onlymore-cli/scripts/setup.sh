@@ -46,7 +46,7 @@ SITES=("colhybri.com" "dojukushingi.com" "colhybri.vision")
 
 header "Phase 1: CLI Availability"
 
-REQUIRED_CLIS=("curl" "jq" "git" "node" "npm" "gh" "vercel" "supabase" "stripe")
+REQUIRED_CLIS=("curl" "jq" "git" "node" "npm" "gh" "vercel" "supabase" "stripe" "gws")
 INSTALL_HINTS=(
   "curl: apt install curl"
   "jq: apt install jq"
@@ -57,6 +57,7 @@ INSTALL_HINTS=(
   "vercel: npm i -g vercel"
   "supabase: npm i -g supabase"
   "stripe: https://stripe.com/docs/stripe-cli"
+  "gws: npm i -g @googleworkspace/cli"
 )
 
 for i in "${!REQUIRED_CLIS[@]}"; do
@@ -95,6 +96,18 @@ if command -v vercel &>/dev/null; then
   fi
 else
   fail "Vercel CLI not available"
+fi
+
+# Google Workspace
+if command -v gws &>/dev/null; then
+  gws_method=$(gws auth status 2>/dev/null | jq -r '.auth_method // "none"' 2>/dev/null || echo "none")
+  if [[ "$gws_method" != "none" ]]; then
+    ok "Google Workspace authenticated ($gws_method)"
+  else
+    warn "Google Workspace not authenticated — Run: gws auth setup && gws auth login"
+  fi
+else
+  fail "Google Workspace CLI not available"
 fi
 
 # ── Phase 3: Environment Variables ─────────────────────────

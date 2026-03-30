@@ -1,13 +1,13 @@
 ---
 name: onlymore-cli
 description: >
-  ONLYMORE CLI v2.0 — Command center zero-MCP connectant 6 services (Supabase, Vercel,
-  GitHub, Notion, n8n, Stripe) via CLI natifs et API REST directes. Dispatcher bash
-  complet avec health checks, deploy pipeline, query database, manage workflows.
+  ONLYMORE CLI v2.1 — Command center zero-MCP connectant 7 services (Supabase, Vercel,
+  GitHub, Notion, n8n, Stripe, Google Workspace) via CLI natifs et API REST directes.
+  Dispatcher bash complet avec health checks, deploy pipeline, query database, manage workflows.
   Triggers: CLI, om, status, deploy, database, query, notion, n8n, workflow, github,
-  PR, merge, stripe, supabase, vercel, infra, audit, health, connecte tout, dashboard,
-  ops, om-cli, command center CLI, health check, deploy pipeline, smoke test,
-  services status, API check, environment setup, om health, om deploy.
+  PR, merge, stripe, supabase, vercel, google, gws, drive, gmail, calendar, sheets, docs,
+  infra, audit, health, connecte tout, dashboard, ops, om-cli, command center CLI,
+  health check, deploy pipeline, smoke test, services status, API check, om health, om deploy.
 allowed-tools:
   - Bash
   - Read
@@ -16,12 +16,12 @@ allowed-tools:
   - Glob
 ---
 
-# ONLYMORE CLI v2.0 — Zero-MCP Command Center
+# ONLYMORE CLI v2.1 — Zero-MCP Command Center
 
 ## Overview
 
-Dispatcher bash (`om-cli.sh`) that connects 6 services without MCP servers.
-Everything runs through native CLIs (gh, vercel, supabase, stripe) and curl + jq.
+Dispatcher bash (`om-cli.sh`) that connects 7 services without MCP servers.
+Everything runs through native CLIs (gh, vercel, supabase, stripe, gws) and curl + jq.
 
 ## Critical Constants
 
@@ -57,6 +57,11 @@ STRIPE_DOJUKU_PRODUCT="prod_SZo3hQwpppmkd8"
 SITES=("colhybri.com" "dojukushingi.com" "colhybri.vision")
 ```
 
+```bash
+# Google Workspace
+GOOGLE_ACCOUNT="onlymore2024@gmail.com"
+```
+
 ## Required Environment Variables
 
 Read from env, NEVER hardcoded:
@@ -69,10 +74,11 @@ Read from env, NEVER hardcoded:
 | N8N_API_KEY | n8n Settings > API | Workflow management |
 | STRIPE_SECRET_KEY | dashboard.stripe.com/apikeys | Stripe API |
 | GITHUB_TOKEN | Auto-managed via `gh auth` | GitHub API |
+| (Google Workspace) | Auto-managed via `gws auth login` | OAuth browser flow |
 
 ## Required CLIs
 
-curl, jq, git, node, npm, gh, vercel, supabase, stripe
+curl, jq, git, node, npm, gh, vercel, supabase, stripe, gws
 
 ## Service Commands
 
@@ -189,10 +195,40 @@ curl -s "https://api.stripe.com/v1/products?limit=20" \
   -u "${STRIPE_SECRET_KEY}:" | jq '.data[] | {id, name, active}'
 ```
 
+### Google Workspace (`om google|gws`)
+
+```bash
+# Health check
+om google health
+
+# Drive — list files, search
+om google drive list
+om google drive search "pitch deck"
+
+# Gmail — list, send
+om google gmail list
+om google gmail send "investor@fund.com" "Subject" "Body"
+
+# Calendar — upcoming events, create
+om google calendar list
+om google calendar create "RDV Occitanie Angels" "2026-04-15" "10:00"
+
+# Sheets — get info, read range
+om google sheets get <spreadsheetId>
+om google sheets read <spreadsheetId> "Sheet1!A1:Z100"
+
+# Docs — get, create
+om google docs get <documentId>
+om google docs create "Memo Investisseur Q2"
+```
+
+Auth: requires `gws auth setup` + `gws auth login` (browser-based OAuth).
+See `.claude/skills/google-workspace/SKILL.md` for full reference.
+
 ## Orchestration
 
 ### Health Check (`om health`)
-Sequential check of all 6 services + site reachability.
+Sequential check of all 7 services + site reachability.
 Each service: API ping with 5s timeout, report status.
 
 ### Deploy Pipeline (`om deploy <project>`)
@@ -241,13 +277,15 @@ api_call() {
 ## Usage
 
 ```bash
-om health              # Check all 6 services
+om health              # Check all 7 services
 om supabase tables     # List Supabase tables
 om vercel deploys      # Recent deployments
 om github repos        # List org repos
 om notion todos        # Open TODOs
 om n8n workflows       # List n8n workflows
 om stripe balance      # Stripe balance
+om google drive list   # List Drive files
+om google gmail send   # Send email
 om deploy colhybri     # Full deploy pipeline
 om setup               # Run environment setup
 ```

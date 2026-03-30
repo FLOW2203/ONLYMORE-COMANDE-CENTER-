@@ -2,8 +2,9 @@
 set -euo pipefail
 
 # ═══════════════════════════════════════════════════════════
-# ONLYMORE CLI v2.0 — Zero-MCP Command Center
-# Connects: Supabase, Vercel, GitHub, Notion, n8n, Stripe
+# ONLYMORE CLI v2.1 — Zero-MCP Command Center
+# Connects: Supabase, Vercel, GitHub, Notion, n8n, Stripe,
+#           Google Workspace (gws)
 # ═══════════════════════════════════════════════════════════
 
 # ── Constants ──────────────────────────────────────────────
@@ -29,6 +30,8 @@ NOTION_COMMAND_CENTER="31b98dfff6a681298dcbe37403faca80"
 STRIPE_DOJUKU_PRODUCT="prod_SZo3hQwpppmkd8"
 
 SITES=("colhybri.com" "dojukushingi.com" "colhybri.vision")
+
+GOOGLE_ACCOUNT="onlymore2024@gmail.com"
 
 # ── Colors ─────────────────────────────────────────────────
 
@@ -413,6 +416,159 @@ cmd_stripe() {
   esac
 }
 
+# ── Google Workspace ───────────────────────────────────────
+
+cmd_google() {
+  local subcmd="${1:-health}"
+  shift 2>/dev/null || true
+
+  if ! command -v gws &>/dev/null; then
+    fail "gws CLI not installed. Install: npm i -g @googleworkspace/cli"
+    return 1
+  fi
+
+  case "$subcmd" in
+    health)
+      header "Google Workspace Health"
+      local auth_status
+      auth_status=$(gws auth status 2>/dev/null || echo '{"auth_method":"none"}')
+      local method
+      method=$(echo "$auth_status" | jq -r '.auth_method // "none"' 2>/dev/null || echo "none")
+      if [[ "$method" != "none" ]]; then
+        ok "Google Workspace authenticated (method: $method)"
+      else
+        warn "Google Workspace not authenticated"
+        echo ""
+        echo "  To authenticate, run manually in a terminal:"
+        echo "    1. gws auth setup    (configure Google Cloud Project)"
+        echo "    2. gws auth login    (opens browser for OAuth)"
+        echo "  Account: $GOOGLE_ACCOUNT"
+      fi
+      ;;
+    drive)
+      header "Google Drive"
+      local drive_cmd="${1:-list}"
+      shift 2>/dev/null || true
+      case "$drive_cmd" in
+        list)
+          gws drive files list --params '{"pageSize": 10, "fields": "files(id,name,mimeType,modifiedTime)"}' --format table 2>/dev/null \
+            || fail "gws drive files list failed (auth needed?)"
+          ;;
+        search)
+          local query="${1:-}"
+          if [[ -z "$query" ]]; then echo "Usage: om google drive search \"query\""; return 1; fi
+          gws drive files list --params "{\"q\": \"name contains '${query}'\", \"pageSize\": 10, \"fields\": \"files(id,name,mimeType)\"}" --format table 2>/dev/null \
+            || fail "gws drive search failed"
+          ;;
+        *)
+          echo "Usage: om google drive [list|search]"
+          ;;
+      esac
+      ;;
+    gmail)
+      header "Gmail"
+      local gmail_cmd="${1:-list}"
+      shift 2>/dev/null || true
+      case "$gmail_cmd" in
+        list)
+          gws gmail users messages list --params '{"userId": "me", "maxResults": 10}' --format table 2>/dev/null \
+            || fail "gws gmail list failed (auth needed?)"
+          ;;
+        send)
+          local to="${1:-}" subject="${2:-}" body="${3:-}"
+          if [[ -z "$to" || -z "$subject" ]]; then
+            echo "Usage: om google gmail send \"to@email\" \"Subject\" \"Body\""
+            return 1
+          fi
+          local raw
+          raw=$(printf "To: %s\r\nFrom: %s\r\nSubject: %s\r\nContent-Type: text/plain; charset=utf-8\r\n\r\n%s" \
+            "$to" "$GOOGLE_ACCOUNT" "$subject" "$body" | base64 -w 0 | tr '+/' '-_' | tr -d '=')
+          gws gmail users messages send --params '{"userId": "me"}' --json "{\"raw\": \"$raw\"}" 2>/dev/null \
+            || fail "gws gmail send failed"
+          ;;
+        *)
+          echo "Usage: om google gmail [list|send]"
+          ;;
+      esac
+      ;;
+    calendar)
+      header "Google Calendar"
+      local cal_cmd="${1:-list}"
+      shift 2>/dev/null || true
+      case "$cal_cmd" in
+        list)
+          local now
+          now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          gws calendar events list --params "{\"calendarId\": \"primary\", \"timeMin\": \"$now\", \"maxResults\": 10, \"singleEvents\": true, \"orderBy\": \"startTime\"}" --format table 2>/dev/null \
+            || fail "gws calendar list failed (auth needed?)"
+          ;;
+        create)
+          local summary="${1:-}" date="${2:-}" time="${3:-09:00}"
+          if [[ -z "$summary" || -z "$date" ]]; then
+            echo "Usage: om google calendar create \"Summary\" \"2026-04-15\" [\"09:00\"]"
+            return 1
+          fi
+          local start_dt="${date}T${time}:00"
+          local end_hour=$((${time%%:*} + 1))
+          local end_dt="${date}T$(printf '%02d' $end_hour):${time##*:}:00"
+          gws calendar events insert --params '{"calendarId": "primary"}' \
+            --json "{\"summary\": \"$summary\", \"start\": {\"dateTime\": \"$start_dt\", \"timeZone\": \"Europe/Paris\"}, \"end\": {\"dateTime\": \"$end_dt\", \"timeZone\": \"Europe/Paris\"}}" 2>/dev/null \
+            || fail "gws calendar create failed"
+          ;;
+        *)
+          echo "Usage: om google calendar [list|create]"
+          ;;
+      esac
+      ;;
+    sheets)
+      header "Google Sheets"
+      local sheets_cmd="${1:-list}"
+      shift 2>/dev/null || true
+      case "$sheets_cmd" in
+        get)
+          local sheet_id="${1:-}"
+          if [[ -z "$sheet_id" ]]; then echo "Usage: om google sheets get <spreadsheetId>"; return 1; fi
+          gws sheets spreadsheets get --params "{\"spreadsheetId\": \"$sheet_id\"}" 2>/dev/null \
+            || fail "gws sheets get failed"
+          ;;
+        read)
+          local sheet_id="${1:-}" range="${2:-Sheet1!A1:Z100}"
+          if [[ -z "$sheet_id" ]]; then echo "Usage: om google sheets read <spreadsheetId> [range]"; return 1; fi
+          gws sheets spreadsheets values get --params "{\"spreadsheetId\": \"$sheet_id\", \"range\": \"$range\"}" --format table 2>/dev/null \
+            || fail "gws sheets read failed"
+          ;;
+        *)
+          echo "Usage: om google sheets [get|read]"
+          ;;
+      esac
+      ;;
+    docs)
+      header "Google Docs"
+      local docs_cmd="${1:-get}"
+      shift 2>/dev/null || true
+      case "$docs_cmd" in
+        get)
+          local doc_id="${1:-}"
+          if [[ -z "$doc_id" ]]; then echo "Usage: om google docs get <documentId>"; return 1; fi
+          gws docs documents get --params "{\"documentId\": \"$doc_id\"}" 2>/dev/null \
+            || fail "gws docs get failed"
+          ;;
+        create)
+          local title="${1:-Untitled}"
+          gws docs documents create --json "{\"title\": \"$title\"}" 2>/dev/null \
+            || fail "gws docs create failed"
+          ;;
+        *)
+          echo "Usage: om google docs [get|create]"
+          ;;
+      esac
+      ;;
+    *)
+      echo "Usage: om google [health|drive|gmail|calendar|sheets|docs]"
+      ;;
+  esac
+}
+
 # ── Health Check ───────────────────────────────────────────
 
 cmd_health() {
@@ -488,6 +644,20 @@ cmd_health() {
     fail "STRIPE_SECRET_KEY not set"; failed=$((failed + 1))
   fi
 
+  # Google Workspace
+  info "Google Workspace..."
+  if command -v gws &>/dev/null; then
+    local gws_method
+    gws_method=$(gws auth status 2>/dev/null | jq -r '.auth_method // "none"' 2>/dev/null || echo "none")
+    if [[ "$gws_method" != "none" ]]; then
+      ok "Google Workspace authenticated ($gws_method)"; passed=$((passed + 1))
+    else
+      fail "Google Workspace not authenticated (run: gws auth login)"; failed=$((failed + 1))
+    fi
+  else
+    fail "gws CLI not installed"; failed=$((failed + 1))
+  fi
+
   # Sites
   echo ""
   info "Sites..."
@@ -502,7 +672,7 @@ cmd_health() {
   # Summary
   echo ""
   echo -e "${BOLD}══════════════════════════════════${NC}"
-  echo -e "  Services: ${GREEN}$passed${NC}/${BOLD}6${NC} connected | ${RED}$failed${NC} failed"
+  echo -e "  Services: ${GREEN}$passed${NC}/${BOLD}7${NC} connected | ${RED}$failed${NC} failed"
   echo -e "${BOLD}══════════════════════════════════${NC}"
 
   if [[ $failed -eq 0 ]]; then
@@ -563,7 +733,7 @@ cmd_help() {
   cat <<'HELP'
 
   ╔══════════════════════════════════════════════════╗
-  ║         ONLYMORE CLI v2.0 — om <command>        ║
+  ║         ONLYMORE CLI v2.1 — om <command>        ║
   ╚══════════════════════════════════════════════════╝
 
   SERVICES:
@@ -573,9 +743,10 @@ cmd_help() {
     notion|nt         [todos|search|create-todo|editorial]
     n8n               [workflows|executions|activate|deactivate|trigger]
     stripe|st         [balance|customers|payments|subscriptions|products]
+    google|gws        [health|drive|gmail|calendar|sheets|docs]
 
   ORCHESTRATION:
-    health|status     Check all 6 services + sites
+    health|status     Check all 7 services + sites
     deploy            Preflight → build → deploy → smoke test
     setup             Run environment validator
 
@@ -588,6 +759,9 @@ cmd_help() {
     om notion create-todo "Fix OAuth flow" "P0 Critique" "COLHYBRI"
     om n8n workflows
     om stripe balance
+    om google drive list
+    om google gmail send "to@email" "Subject" "Body"
+    om google calendar create "RDV Occitanie Angels" "2026-04-15" "10:00"
     om deploy colhybri
 
 HELP
@@ -606,6 +780,7 @@ main() {
     notion|nt)            cmd_notion "$@" ;;
     n8n)                  cmd_n8n "$@" ;;
     stripe|st)            cmd_stripe "$@" ;;
+    google|gws)           cmd_google "$@" ;;
     health|status)        cmd_health ;;
     deploy)               cmd_deploy "$@" ;;
     setup)
