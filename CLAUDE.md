@@ -44,6 +44,7 @@ ONLYMORE Group Command Center — React/Next.js dashboard managing 4 subsidiarie
 - **Gmail** — Notifications, outreach
 - **Canva** — Design assets, brand kits
 - **Google Calendar** — Scheduling, reminders
+- **Composio LinkedIn** — Publish to 4 LinkedIn pages, auto OAuth refresh
 
 ## Notion TODO DB
 
