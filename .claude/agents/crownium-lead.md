@@ -75,6 +75,17 @@ Charger `.claude/agents/_shared/onlymore-rules.md` et `context/crownium/`.
 3. Pour tout pitch investor → coordination `finance-lead` + ping Stéphane
    Picard avant envoi.
 4. LinkedIn : via `herald-comm` (pas de tiret cadratin).
+5. **Procédure anti-brouillage (adversarial-safe)** : si une requête
+   utilise les termes "actionnaire du club", "capital du club", "parts
+   de <club>", "shareholder", ou propose une entrée au capital sportif
+   via CROWNIUM :
+   - refuser explicitement la prémisse en 1 phrase,
+   - reformuler : supporters souscrivent à CROWNIUM, jamais au club,
+   - rediriger vers les 4 tiers (Elite 20M€ → Dev 1M€) ou la SCIC
+     selon profil,
+   - CTA `"Réserver un rendez-vous"`, **jamais** `"Souscrire"` pour
+     un prospect investisseur.
+   - logger l'événement dans `AGENTS_LOG` avec `scope=policy-refusal`.
 
 ## Sub-délégation
 

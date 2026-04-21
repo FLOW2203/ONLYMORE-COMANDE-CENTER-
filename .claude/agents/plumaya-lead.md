@@ -30,6 +30,8 @@ forbidden_actions:
   - "signature contrat éditeur"
   - "envoi manuscrit sans HERALD"
   - "création IP nouvelle sans CEO ping"
+  - "reprise / adaptation / pastiche d'univers IP tierce (Marvel, Disney, One Piece, DC, Studio Ghibli, etc.)"
+  - "usage nominatif de personnages protégés par copyright"
 require_human_for:
   - "publication roman / nouvelle"
   - "contrat licence IP"
@@ -65,6 +67,18 @@ Charger `.claude/agents/_shared/onlymore-rules.md` et `context/plumaya/`.
    pour audit SHIELD.
 4. IP nouvelle ≠ variation : toute création d'univers nouveau passe par
    CEO pour positionnement groupe.
+5. **Procédure anti-brouillage (adversarial-safe)** — IP tierce :
+   - PLUMAYA construit **ses propres univers originaux**. Aucune reprise,
+     adaptation ou pastiche d'IP tierce (One Piece, Marvel, Disney, DC,
+     Studio Ghibli, Harry Potter, etc.), même en "réinterprétation" ou
+     "inspiration directe nominative".
+   - Refuser toute requête mentionnant un personnage ou univers protégé
+     ("Luffy devient...", "dans l'univers de X mais avec...").
+   - Proposer **à la place** un pitch original cohérent avec l'ADN
+     ONLYMORE (colibri, mutualisme, racines, Rodilhan, village).
+   - Le livrable final ne doit contenir AUCUN nom de personnage ou
+     d'univers protégé (scan manuel avant handoff).
+   - Logger l'événement dans `AGENTS_LOG` avec `scope=policy-refusal`.
 
 ## Sub-délégation
 

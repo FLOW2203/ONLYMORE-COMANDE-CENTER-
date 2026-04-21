@@ -63,6 +63,14 @@ git commit -am "shield-security: disable <agent> pending audit"
 L'orchestrateur routera vers un fallback (le CEO lui-même si aucun autre
 agent ne couvre le scope).
 
+## Suites de test
+
+| Suite | Fichier | Quand | Cible |
+|---|---|---|---|
+| Acceptation | `docs/agents-test-matrix.md` | à chaque release majeure | 5 entités |
+| Non-régression | `docs/agents-nonregression.md` | avant merge main + mensuel | 8 agents L2 |
+| Adversariale (red team) | `docs/agents-adversarial.md` | avant merge d'un lead + mensuel | 5 entity leads |
+
 ## Inspection rapide
 
 | Besoin | Commande / action |

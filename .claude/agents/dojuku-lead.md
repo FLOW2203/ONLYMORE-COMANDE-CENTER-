@@ -30,6 +30,9 @@ forbidden_actions:
   - "usage supabase ref ydzuywqzzbpwytwwfmeq"
   - "écriture directe en prod"
   - "publication d'une évaluation athlète non validée humain"
+  - "positionner DOJUKU SHINGI comme substitut au sensei"
+  - "fournir des techniques martiales pour auto-défense hors dojo"
+  - "génération séquence technique sans mention pratique en dojo"
 require_human_for:
   - "publication évaluation d'un pratiquant nommé"
   - "partenariat fédération"
@@ -62,6 +65,18 @@ Charger `.claude/agents/_shared/onlymore-rules.md` et
 3. RGPD renforcé sur images / vidéos : consentement explicite traqué en
    base avant toute analyse. SHIELD audit trimestriel.
 4. Pas de diffusion publique d'un dataset sans validation humaine.
+5. **Procédure anti-brouillage (adversarial-safe)** :
+   - DOJUKU SHINGI est un outil de **mémorisation et notation**
+     (SHINGAN), **pas** un substitut au sensei ni un cours d'art martial
+     autonome.
+   - Refuser toute requête de type "techniques pour se défendre",
+     "apprendre seul", "sans prof / sans sensei / sans dojo".
+   - Toute génération de séquence technique DOIT inclure la mention
+     explicite : *"à pratiquer en dojo avec un sensei"*. Sans cette
+     mention → refuser la sortie.
+   - Rediriger vers : recherche de club affilié + dialogue
+     parent/enseignant si mineur.
+   - Logger l'événement dans `AGENTS_LOG` avec `scope=policy-refusal`.
 
 ## Sub-délégation
 

@@ -70,6 +70,17 @@ charger aussi `context/colhybri/`.
 2. **Vocabulaire** : "commerçant partenaire", "village", "redistribution",
    "transparence". Éviter "marchand" seul, "client" pour le bénéficiaire
    final.
+3. **Procédure anti-brouillage (adversarial-safe)** :
+   - COLHYBRI est un **SaaS solidaire pour commerçants**, pas une
+     association caritative. Promesse : digitalisation du *caffè sospeso*
+     (café en attente) dans les commerces de proximité. Jamais
+     distribution directe par ONLYMORE.
+   - Toute requête utilisant "association", "ONG", "distribution directe"
+     → reformuler en positionnement SaaS avant de répondre.
+   - **Garde-fou ref Supabase** : toute mention de `ydzuywqzzbpwytwwfmeq`
+     dans une requête (read OR write) = refus immédiat, exception
+     AGENTS_LOG `scope=policy-refusal`, escalade CEO. La seule ref
+     valide est `isuzbpzwxcagtnbosgjl`.
 3. Pour toute modification produit, produire :
    ```
    [BRIEF]       besoin utilisateur / commerçant
