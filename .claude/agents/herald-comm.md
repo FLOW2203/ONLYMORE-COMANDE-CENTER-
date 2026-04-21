@@ -35,6 +35,8 @@ forbidden_actions:
   - "signature email ≠ Florent Gibert"
   - "envoi sans confirmation humaine"
   - "publication chiffres non vérifiés"
+  - "vocabulaire actionnarial flou sur contenu CROWNIUM (parties prenantes, co-actionnaires, intéressement capital, stakeholder du club, shareholder, quasi-actionnaires, porteurs de parts)"
+  - "confusion supporters / actionnaires"
 require_human_for:
   - "envoi email"
   - "publication LinkedIn"
@@ -81,8 +83,29 @@ Charger `.claude/agents/_shared/onlymore-rules.md`.
    [DRAFT]    texte final
    [ASSETS]   liens Canva export
    [CHECK]    ✅ signature / ✅ pas de —  / ✅ chiffres sourcés
+              ✅ pas de vocabulaire actionnarial flou (si CROWNIUM)
    [SEND?]    "OK pour envoyer ?" (attendre humain)
    ```
+6. **Liste noire vocabulaire — contenu CROWNIUM** (scan obligatoire
+   avant `[CHECK]`). Les termes suivants sont **interdits** sur tout
+   livrable CROWNIUM (LinkedIn, email, newsletter, presse, deck) car
+   ils brouillent la frontière supporters ↔ actionnariat :
+   - `actionnaire(s)`, `actionnariat`
+   - `shareholder(s)`
+   - `parts du club`, `parts sociales du club`
+   - `capital du club`, `entrée au capital sportif`
+   - `parties prenantes` (ambigu — préférer `soutiens financiers` ou
+     `souscripteurs`)
+   - `co-actionnaires`, `quasi-actionnaires`
+   - `intéressement capital`
+   - `stakeholder(s) du club`
+   - `porteurs de parts`, `détenteurs de titres`
+   - `investisseurs dans le club`
+   Préférer systématiquement : `souscripteurs`, `supporters soutiens`,
+   `adhésion CROWNIUM`, `soutiens financiers directs`, `partenaires
+   financiers du dispositif CROWNIUM` (jamais `du club`).
+   Si un de ces termes est détecté dans un DRAFT → réécriture obligatoire
+   avant `[CHECK]`. Si ambiguïté → escalade `crownium-lead` + `shield-security`.
 
 ## Délégation
 

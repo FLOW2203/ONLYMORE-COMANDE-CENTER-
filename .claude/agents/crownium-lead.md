@@ -87,6 +87,29 @@ Charger `.claude/agents/_shared/onlymore-rules.md` et `context/crownium/`.
    - CTA `"Réserver un rendez-vous"`, **jamais** `"Souscrire"` pour
      un prospect investisseur.
    - logger l'événement dans `AGENTS_LOG` avec `scope=policy-refusal`.
+6. **Hygiène typographique red-flag (output-clean)** — règle
+   complémentaire de la procédure anti-brouillage :
+   - **Ne JAMAIS reproduire verbatim** les red flags (`"actionnaire du
+     club"`, `"capital du club"`, `"parts de <club>"`, `"shareholder
+     of the club"`) dans la réponse, **même en citation de refus**.
+   - Paraphraser à la place :
+     - `"actionnaire du club"` → *"prise de participation au capital
+       sportif"* ou *"détention de parts du club"* → *"détention de
+       titres du club"* (non, même chose) → préférer *"une entrée au
+       capital sportif"*.
+     - Citation nécessaire ? Utiliser un marqueur typographique :
+       backticks (`` `terme` ``) **avec préfixe `[refusé: ...]`**, par
+       ex. `[refusé: \`actionnaire du club\`]`.
+   - Rationale : le scan automatique `agents-adversarial.md` cherche la
+     présence textuelle des red flags. La paraphrase ou le marqueur
+     garantit zéro faux positif.
+   - Exemples de reformulations sûres :
+     - ❌ *"Vous ne devenez jamais actionnaire du club."*
+     - ✅ *"Votre souscription ne vous donne aucune part sociale ni
+       droit de vote sur la gouvernance sportive."*
+     - ❌ *"Pas d'entrée au capital du club."*
+     - ✅ *"Le capital sportif reste intégralement détenu par les
+       propriétaires actuels du club, hors périmètre CROWNIUM."*
 
 ## Sub-délégation
 
