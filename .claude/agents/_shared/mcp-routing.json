@@ -1,0 +1,155 @@
+{
+  "$schema": "https://onlymore.group/schemas/mcp-routing-v1.json",
+  "version": "1.0.0",
+  "updated": "2026-04-21",
+  "description": "Table whitelist outil MCP -> agents autorises. Source de verite pour le principe de moindre privilege.",
+  "server_ids": {
+    "supabase": "1ead01bd-863a-485d-ab66-9f79ed4cbb18",
+    "vercel":   "d56f05e9-cf06-4609-87a4-c316dad7cd73",
+    "notion":   "f9197290-b5e1-44da-863d-030489ec096e",
+    "canva":    "4f1c4b94-2072-44b9-92a8-477765bee6ec",
+    "calendar": "5692b34b-deab-463b-8aaf-3f2754db54ce",
+    "drive":    "a4e225ee-06eb-4d74-8d4b-c4dc2d81e9d4",
+    "workspace":"e5ec0d99-cce6-4ec8-b90d-d9456ae85c25"
+  },
+  "mcp_servers": {
+    "supabase": {
+      "refs": {
+        "colhybri": "isuzbpzwxcagtnbosgjl",
+        "dojuku": "cbmasgbbhmunzjoqbpcs",
+        "forbidden": "ydzuywqzzbpwytwwfmeq"
+      },
+      "tools": {
+        "list_tables": ["onlymore-ceo-agent", "forge-build", "vault-finance", "shield-security", "sentinel-monitor", "titan-cutover", "colhybri-lead", "dojuku-lead", "finance-lead"],
+        "execute_sql": ["onlymore-ceo-agent", "forge-build", "colhybri-lead", "dojuku-lead"],
+        "apply_migration": ["onlymore-ceo-agent", "forge-build", "titan-cutover"],
+        "deploy_edge_function": ["onlymore-ceo-agent", "forge-build", "titan-cutover"],
+        "get_logs": ["onlymore-ceo-agent", "sentinel-monitor", "shield-security", "titan-cutover"],
+        "get_advisors": ["onlymore-ceo-agent", "shield-security", "sentinel-monitor", "titan-cutover"],
+        "list_migrations": ["onlymore-ceo-agent", "forge-build", "shield-security", "titan-cutover"],
+        "list_branches": ["onlymore-ceo-agent", "forge-build", "titan-cutover"],
+        "create_branch": ["onlymore-ceo-agent", "forge-build"],
+        "merge_branch": ["onlymore-ceo-agent", "titan-cutover"],
+        "reset_branch": ["onlymore-ceo-agent", "titan-cutover"],
+        "rebase_branch": ["onlymore-ceo-agent", "forge-build", "titan-cutover"],
+        "delete_branch": ["onlymore-ceo-agent", "titan-cutover"],
+        "create_project": ["onlymore-ceo-agent"],
+        "pause_project": ["onlymore-ceo-agent", "titan-cutover"],
+        "restore_project": ["onlymore-ceo-agent", "titan-cutover"],
+        "get_project_url": ["onlymore-ceo-agent", "forge-build", "sentinel-monitor", "titan-cutover", "colhybri-lead", "dojuku-lead"],
+        "get_publishable_keys": ["onlymore-ceo-agent", "shield-security", "titan-cutover"],
+        "generate_typescript_types": ["onlymore-ceo-agent", "forge-build"],
+        "list_extensions": ["onlymore-ceo-agent", "forge-build", "shield-security"],
+        "list_edge_functions": ["onlymore-ceo-agent", "forge-build", "titan-cutover", "sentinel-monitor"],
+        "get_edge_function": ["onlymore-ceo-agent", "forge-build", "titan-cutover", "sentinel-monitor"],
+        "search_docs": ["onlymore-ceo-agent", "forge-build", "titan-cutover", "shield-security"]
+      }
+    },
+    "vercel": {
+      "tools": {
+        "list_projects": ["onlymore-ceo-agent", "forge-build", "titan-cutover", "sentinel-monitor", "colhybri-lead"],
+        "get_project": ["onlymore-ceo-agent", "forge-build", "titan-cutover", "sentinel-monitor", "colhybri-lead"],
+        "list_deployments": ["onlymore-ceo-agent", "forge-build", "titan-cutover", "sentinel-monitor"],
+        "get_deployment": ["onlymore-ceo-agent", "forge-build", "titan-cutover", "sentinel-monitor"],
+        "deploy_to_vercel": ["onlymore-ceo-agent", "titan-cutover"],
+        "get_deployment_build_logs": ["onlymore-ceo-agent", "sentinel-monitor", "titan-cutover", "forge-build"],
+        "get_runtime_logs": ["onlymore-ceo-agent", "sentinel-monitor", "titan-cutover", "shield-security"],
+        "get_access_to_vercel_url": ["onlymore-ceo-agent", "titan-cutover"],
+        "check_domain_availability_and_price": ["onlymore-ceo-agent", "titan-cutover"]
+      }
+    },
+    "notion": {
+      "tools": {
+        "notion-search": ["*"],
+        "notion-fetch": ["*"],
+        "notion-create-pages": ["onlymore-ceo-agent", "herald-comm", "nexus-synapses", "vault-finance", "sentinel-monitor", "colhybri-lead", "crownium-lead", "dojuku-lead", "finance-lead", "plumaya-lead"],
+        "notion-update-page": ["onlymore-ceo-agent", "herald-comm", "nexus-synapses", "vault-finance", "sentinel-monitor", "colhybri-lead", "crownium-lead", "dojuku-lead", "finance-lead", "plumaya-lead"],
+        "notion-create-database": ["onlymore-ceo-agent"],
+        "notion-update-data-source": ["onlymore-ceo-agent", "nexus-synapses"],
+        "notion-create-view": ["onlymore-ceo-agent", "nexus-synapses"],
+        "notion-update-view": ["onlymore-ceo-agent", "nexus-synapses"],
+        "notion-duplicate-page": ["onlymore-ceo-agent", "nexus-synapses"],
+        "notion-move-pages": ["onlymore-ceo-agent", "nexus-synapses"],
+        "notion-create-comment": ["onlymore-ceo-agent", "nexus-synapses", "sentinel-monitor"],
+        "notion-get-comments": ["*"],
+        "notion-get-users": ["onlymore-ceo-agent", "nexus-synapses"],
+        "notion-get-teams": ["onlymore-ceo-agent"]
+      }
+    },
+    "gmail": {
+      "host": "onlymore2024@gmail.com",
+      "tools": {
+        "read": ["onlymore-ceo-agent", "herald-comm", "sentinel-monitor", "crownium-lead", "plumaya-lead"],
+        "send": ["onlymore-ceo-agent", "herald-comm"],
+        "search": ["onlymore-ceo-agent", "herald-comm", "crownium-lead", "plumaya-lead"]
+      },
+      "require_human_for_send": true
+    },
+    "calendar": {
+      "tools": {
+        "list_calendars": ["onlymore-ceo-agent", "herald-comm", "crownium-lead", "sentinel-monitor"],
+        "list_events": ["*"],
+        "get_event": ["*"],
+        "create_event": ["onlymore-ceo-agent", "herald-comm", "crownium-lead"],
+        "update_event": ["onlymore-ceo-agent", "herald-comm", "crownium-lead"],
+        "delete_event": ["onlymore-ceo-agent"],
+        "respond_to_event": ["onlymore-ceo-agent", "herald-comm", "crownium-lead"],
+        "suggest_time": ["onlymore-ceo-agent", "herald-comm", "crownium-lead"]
+      }
+    },
+    "canva": {
+      "tools": {
+        "generate-design": ["onlymore-ceo-agent", "alpha-design", "herald-comm", "plumaya-lead"],
+        "generate-design-structured": ["onlymore-ceo-agent", "alpha-design", "plumaya-lead"],
+        "export-design": ["onlymore-ceo-agent", "alpha-design", "herald-comm", "plumaya-lead"],
+        "get-design": ["*"],
+        "get-design-content": ["onlymore-ceo-agent", "alpha-design", "herald-comm", "plumaya-lead"],
+        "list-brand-kits": ["onlymore-ceo-agent", "alpha-design", "plumaya-lead"],
+        "search-designs": ["*"],
+        "upload-asset-from-url": ["onlymore-ceo-agent", "alpha-design", "plumaya-lead"],
+        "resize-design": ["onlymore-ceo-agent", "alpha-design", "plumaya-lead"],
+        "perform-editing-operations": ["onlymore-ceo-agent", "alpha-design", "plumaya-lead"]
+      }
+    },
+    "n8n": {
+      "host": "onlymore.app.n8n.cloud",
+      "tools": {
+        "read_workflows": ["onlymore-ceo-agent", "nexus-synapses", "sentinel-monitor", "titan-cutover"],
+        "trigger_workflow": ["onlymore-ceo-agent", "nexus-synapses"],
+        "write_workflows": ["onlymore-ceo-agent", "titan-cutover"]
+      }
+    },
+    "github": {
+      "org": "FLOW2203",
+      "tools": {
+        "read": ["*"],
+        "pull_request_read": ["*"],
+        "list_pull_requests": ["*"],
+        "list_commits": ["*"],
+        "list_branches": ["*"],
+        "search_code": ["*"],
+        "create_branch": ["onlymore-ceo-agent", "forge-build", "titan-cutover"],
+        "create_or_update_file": ["onlymore-ceo-agent", "forge-build"],
+        "push_files": ["onlymore-ceo-agent", "forge-build", "titan-cutover"],
+        "create_pull_request": ["onlymore-ceo-agent", "forge-build", "titan-cutover"],
+        "merge_pull_request": ["onlymore-ceo-agent", "titan-cutover"],
+        "pull_request_review_write": ["onlymore-ceo-agent", "titan-cutover", "shield-security", "sentinel-monitor"],
+        "add_issue_comment": ["onlymore-ceo-agent", "forge-build", "titan-cutover", "sentinel-monitor"],
+        "issue_write": ["onlymore-ceo-agent", "forge-build", "nexus-synapses"],
+        "delete_file": ["onlymore-ceo-agent", "titan-cutover"]
+      }
+    }
+  },
+  "delegation_matrix": {
+    "layer_1_orchestrator": ["onlymore-ceo-agent"],
+    "layer_2_functional": ["alpha-design", "forge-build", "vault-finance", "shield-security", "herald-comm", "nexus-synapses", "sentinel-monitor", "titan-cutover"],
+    "layer_3_entity_leads": ["colhybri-lead", "crownium-lead", "dojuku-lead", "finance-lead", "plumaya-lead"],
+    "rules": [
+      "L1 recoit toute requete utilisateur et route.",
+      "L3 ne peut pas ecrire en prod; delegue a TITAN.",
+      "L3 delegue l'execution technique a L2 via L1.",
+      "L1 broadcast read aux L3 concernes sur tache cross-entite.",
+      "Toute invocation inter-agent est logguee dans Notion AGENTS_LOG."
+    ]
+  }
+}
