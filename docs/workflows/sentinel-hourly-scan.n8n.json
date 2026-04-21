@@ -1,0 +1,247 @@
+{
+  "name": "SENTINEL_HOURLY_SCAN",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "onlymore": {
+      "agent": "sentinel-monitor",
+      "version": "1.0.0",
+      "created_for_commit": "22e675c",
+      "self_log_trace_prefix": "sentinel-scan-",
+      "overlap_minutes": 5,
+      "scan_window_minutes": 65,
+      "critique_email_to": "onlymore2024@gmail.com"
+    }
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 * * * *"
+            }
+          ]
+        }
+      },
+      "id": "a1-cron",
+      "name": "Cron 0 * * * *",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Etape 1 : fenetre de scan\nconst now = new Date();\nconst windowEnd = now.toISOString();\nconst windowStart = new Date(now.getTime() - 65 * 60 * 1000).toISOString();\nconst pad = (n) => String(n).padStart(2, '0');\nconst scanTraceId = `sentinel-scan-${now.getUTCFullYear()}${pad(now.getUTCMonth()+1)}${pad(now.getUTCDate())}${pad(now.getUTCHours())}`;\nreturn [{ json: { window_start: windowStart, window_end: windowEnd, scan_trace_id: scanTraceId } }];"
+      },
+      "id": "a2-window",
+      "name": "Compute scan window",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "f93b807b-09a0-43af-b710-ce5e6527dd5f",
+          "mode": "id"
+        },
+        "returnAll": true,
+        "filterType": "manual",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "key": "timestamp|date",
+              "condition": "on_or_after",
+              "date": "={{ $json.window_start }}"
+            },
+            {
+              "key": "timestamp|date",
+              "condition": "on_or_before",
+              "date": "={{ $json.window_end }}"
+            }
+          ]
+        }
+      },
+      "id": "a3-fetch-agents-log",
+      "name": "Fetch AGENTS_LOG window",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [600, 300],
+      "credentials": {
+        "notionApi": {
+          "id": "__REPLACE_NOTION_CRED_ID__",
+          "name": "ONLYMORE Notion"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Etapes 3-5 : detection RULE 1 (MCP_NO_LOG), RULE 2 (REFUSAL_BURST), RULE 3 (AGENT_SILENT)\n// Entree : items = pages AGENTS_LOG de la fenetre\n\nconst items = $input.all();\nconst meta = $('Compute scan window').item.json;\nconst windowStartMs = new Date(meta.window_start).getTime();\nconst windowEndMs = new Date(meta.window_end).getTime();\nconst scanTraceId = meta.scan_trace_id;\n\n// Normaliser en entrees simples\nconst logs = items.map(it => {\n  const p = it.json.properties || {};\n  return {\n    agent: p.agent?.select?.name || null,\n    scope: p.scope?.select?.name || null,\n    statut: p.statut?.select?.name || null,\n    timestamp: p.timestamp?.date?.start || null,\n    trace_id: p.trace_id?.rich_text?.[0]?.plain_text || null,\n    action: p.action?.title?.[0]?.plain_text || null\n  };\n});\n\nconst alerts = [];\n\n// --- RULE 1 : MCP_NO_LOG ---\n// Hypothese : la liste des actions MCP externes (n8n, vercel, supabase audit) est remontee\n// par des HTTP requests upstream. En MVP, on compare le compteur d'actions MCP observees\n// (fourni par $('Fetch MCP sources')) au nombre d'entrees AGENTS_LOG sur la fenetre.\n// Si ecart > 0, on leve une alerte CRITIQUE par evenement non-logue.\n// TODO : cabler Fetch MCP sources (Vercel deployments, Supabase audit, n8n executions)\n//        puis renseigner ici la logique de matching temporel +/- 5 min.\n\n// --- RULE 2 : REFUSAL_BURST (HAUTE) ---\nconst refusalByAgent = {};\nfor (const l of logs) {\n  if (l.scope === 'policy-refusal') {\n    refusalByAgent[l.agent] = (refusalByAgent[l.agent] || 0) + 1;\n  }\n}\nfor (const [agent, count] of Object.entries(refusalByAgent)) {\n  if (count >= 3) {\n    alerts.push({\n      niveau: 'HAUTE',\n      regle_violee: 'REFUSAL_BURST',\n      agent,\n      mcp_source: 'none',\n      detail: `Agent ${agent} a refuse ${count} fois en <= 65 min (fenetre ${meta.window_start})`,\n      scan_trace_id: scanTraceId,\n      action_ceo: 'Soit regles trop strictes, soit attaque en cours, investiguer.',\n      timestamp: meta.window_end\n    });\n  }\n}\n\n// --- RULE 3 : AGENT_SILENT (MOYENNE) ---\n// Agent cite dans git log recent ou n8n executions mais absent d'AGENTS_LOG.\n// TODO : cabler source git/n8n executions pour activer. Placeholder ici.\n\n// --- Comptage ---\nconst counts = { CRITIQUE: 0, HAUTE: 0, MOYENNE: 0, INFO: 0 };\nfor (const a of alerts) counts[a.niveau]++;\n\nreturn [{ json: { alerts, counts, scan_trace_id: scanTraceId, meta, entries_scanned: logs.length } }];"
+      },
+      "id": "a4-detect",
+      "name": "Detect rules 1-3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "create",
+        "databaseId": {
+          "__rl": true,
+          "value": "f93b807b-09a0-43af-b710-ce5e6527dd5f",
+          "mode": "id"
+        },
+        "title": "=sentinel-scan {{ $json.counts.CRITIQUE }} CRITIQUE / {{ $json.counts.HAUTE }} HAUTE / {{ $json.counts.MOYENNE }} MOYENNE",
+        "propertiesUi": {
+          "propertyValues": [
+            { "key": "agent|select", "selectValue": "sentinel-monitor" },
+            { "key": "invoked_by|select", "selectValue": "human" },
+            { "key": "scope|select", "selectValue": "log" },
+            { "key": "statut|select", "selectValue": "ok" },
+            { "key": "entite|multi_select", "multiSelectValue": "GROUPE" },
+            { "key": "timestamp|date", "date": "={{ $json.meta.window_end }}", "timezone": "UTC" },
+            { "key": "trace_id|rich_text", "richText": "={{ $json.scan_trace_id }}" },
+            { "key": "target|rich_text", "richText": "=AGENTS_LOG window {{ $json.meta.window_start }} -> {{ $json.meta.window_end }}" },
+            { "key": "notes|rich_text", "richText": "={{ $json.entries_scanned }} entrees scannees. Alertes : {{ $json.counts.CRITIQUE }} CRITIQUE, {{ $json.counts.HAUTE }} HAUTE, {{ $json.counts.MOYENNE }} MOYENNE, {{ $json.counts.INFO }} INFO." }
+          ]
+        }
+      },
+      "id": "a5-selflog",
+      "name": "Self-log AGENTS_LOG",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [1000, 200],
+      "credentials": {
+        "notionApi": {
+          "id": "__REPLACE_NOTION_CRED_ID__",
+          "name": "ONLYMORE Notion"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Emet une alerte par element. Execute apres Self-log pour ne pas interrompre si write fail.\nconst alerts = $('Detect rules 1-3').item.json.alerts || [];\nreturn alerts.map(a => ({ json: a }));"
+      },
+      "id": "a6-explode",
+      "name": "Explode alerts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, 400]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "create",
+        "databaseId": {
+          "__rl": true,
+          "value": "7afd4d55-33d9-4343-ba14-510f179321bc",
+          "mode": "id"
+        },
+        "title": "={{ $json.detail }}",
+        "propertiesUi": {
+          "propertyValues": [
+            { "key": "niveau|select", "selectValue": "={{ $json.niveau }}" },
+            { "key": "regle_violee|select", "selectValue": "={{ $json.regle_violee }}" },
+            { "key": "agent|select", "selectValue": "={{ $json.agent }}" },
+            { "key": "mcp_source|select", "selectValue": "={{ $json.mcp_source }}" },
+            { "key": "scan_trace_id|rich_text", "richText": "={{ $json.scan_trace_id }}" },
+            { "key": "action_ceo|rich_text", "richText": "={{ $json.action_ceo }}" },
+            { "key": "timestamp|date", "date": "={{ $json.timestamp }}", "timezone": "UTC" }
+          ]
+        }
+      },
+      "id": "a7-push-notion",
+      "name": "Push alert to SENTINEL_ALERTS",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [1200, 400],
+      "credentials": {
+        "notionApi": {
+          "id": "__REPLACE_NOTION_CRED_ID__",
+          "name": "ONLYMORE Notion"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "critique-only",
+              "leftValue": "={{ $json.niveau }}",
+              "rightValue": "CRITIQUE",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "a8-if-critique",
+      "name": "IF niveau == CRITIQUE",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.1,
+      "position": [1400, 400]
+    },
+    {
+      "parameters": {
+        "sendTo": "onlymore2024@gmail.com",
+        "subject": "=[SENTINEL CRITIQUE] {{ $json.scan_trace_id }} {{ $json.regle_violee }}",
+        "emailType": "text",
+        "message": "=Alerte CRITIQUE detectee par @sentinel-monitor.\n\nRegle : {{ $json.regle_violee }}\nAgent : {{ $json.agent }}\nMCP source : {{ $json.mcp_source }}\nTimestamp : {{ $json.timestamp }}\nScan : {{ $json.scan_trace_id }}\n\nDetail :\n{{ $json.detail }}\n\nAction CEO :\n{{ $json.action_ceo }}\n\nPage Notion SENTINEL_ALERTS :\nhttps://www.notion.so/7afd4d5533d94343ba14510f179321bc\n\nFlorent Gibert\n(envoye automatiquement par sentinel-monitor v1)"
+      },
+      "id": "a9-email",
+      "name": "Push email CRITIQUE",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1600, 400],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "__REPLACE_GMAIL_CRED_ID__",
+          "name": "ONLYMORE Gmail (onlymore2024@gmail.com)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Cron 0 * * * *": { "main": [[{ "node": "Compute scan window", "type": "main", "index": 0 }]] },
+    "Compute scan window": { "main": [[{ "node": "Fetch AGENTS_LOG window", "type": "main", "index": 0 }]] },
+    "Fetch AGENTS_LOG window": { "main": [[{ "node": "Detect rules 1-3", "type": "main", "index": 0 }]] },
+    "Detect rules 1-3": {
+      "main": [[
+        { "node": "Self-log AGENTS_LOG", "type": "main", "index": 0 },
+        { "node": "Explode alerts", "type": "main", "index": 0 }
+      ]]
+    },
+    "Explode alerts": { "main": [[{ "node": "Push alert to SENTINEL_ALERTS", "type": "main", "index": 0 }]] },
+    "Push alert to SENTINEL_ALERTS": { "main": [[{ "node": "IF niveau == CRITIQUE", "type": "main", "index": 0 }]] },
+    "IF niveau == CRITIQUE": {
+      "main": [
+        [{ "node": "Push email CRITIQUE", "type": "main", "index": 0 }],
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "saveDataSuccessExecution": "all",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "",
+    "executionOrder": "v1",
+    "timezone": "UTC"
+  },
+  "tags": ["sentinel", "onlymore", "agents-monitoring"],
+  "versionId": ""
+}
