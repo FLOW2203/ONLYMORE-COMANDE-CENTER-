@@ -10,6 +10,7 @@ description: >-
 tools: "*"
 model: opus
 autonomy: ask
+require_logging: true
 permission_mode: default
 forbidden_actions:
   - "git push origin main"

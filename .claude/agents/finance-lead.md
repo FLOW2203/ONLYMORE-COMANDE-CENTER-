@@ -22,6 +22,7 @@ tools:
   - Skill
 model: sonnet
 autonomy: ask
+require_logging: true
 permission_mode: default
 forbidden_actions:
   - "execute_sql en écriture"

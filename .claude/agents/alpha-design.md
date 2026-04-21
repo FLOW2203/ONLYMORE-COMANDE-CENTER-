@@ -34,6 +34,7 @@ tools:
   - Skill
 model: sonnet
 autonomy: auto
+require_logging: true
 permission_mode: acceptEdits
 forbidden_actions:
   - "publier sur LinkedIn"

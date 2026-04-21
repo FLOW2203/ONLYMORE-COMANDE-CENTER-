@@ -50,6 +50,7 @@ tools:
   - Skill
 model: sonnet
 autonomy: confirm
+require_logging: true
 permission_mode: acceptEdits
 forbidden_actions:
   - "git push origin main"

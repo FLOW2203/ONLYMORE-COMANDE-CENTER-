@@ -30,6 +30,7 @@ tools:
   - Skill
 model: sonnet
 autonomy: ask
+require_logging: true
 permission_mode: default
 forbidden_actions:
   - "écriture directe en prod"

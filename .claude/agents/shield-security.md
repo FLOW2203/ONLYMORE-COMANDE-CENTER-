@@ -31,6 +31,7 @@ tools:
   - Skill
 model: opus
 autonomy: ask
+require_logging: true
 permission_mode: default
 forbidden_actions:
   - "modification code (FORGE)"

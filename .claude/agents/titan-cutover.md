@@ -49,6 +49,7 @@ tools:
   - Skill
 model: opus
 autonomy: confirm
+require_logging: true
 permission_mode: default
 forbidden_actions:
   - "deploy sans checklist preflight"

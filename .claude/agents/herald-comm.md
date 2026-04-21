@@ -28,6 +28,7 @@ tools:
   - Skill
 model: sonnet
 autonomy: confirm
+require_logging: true
 permission_mode: default
 forbidden_actions:
   - "tiret cadratin (—) sur LinkedIn"
