@@ -12,6 +12,14 @@
     "drive":    "a4e225ee-06eb-4d74-8d4b-c4dc2d81e9d4",
     "workspace":"e5ec0d99-cce6-4ec8-b90d-d9456ae85c25"
   },
+  "agents_log": {
+    "database_id": "f93b807b-09a0-43af-b710-ce5e6527dd5f",
+    "data_source": "collection://95f813af-1e1a-4663-821a-e1dbf5abb51c",
+    "parent_page": "31b98dfff6a681298dcbe37403faca80",
+    "url": "https://www.notion.so/f93b807b09a043afb710ce5e6527dd5f",
+    "created": "2026-04-21",
+    "required_for": "all MCP invocations + inter-agent delegations"
+  },
   "mcp_servers": {
     "supabase": {
       "refs": {

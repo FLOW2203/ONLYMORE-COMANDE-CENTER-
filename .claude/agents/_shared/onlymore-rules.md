@@ -54,6 +54,8 @@ Si aucune source ne confirme → répondre `"information non vérifiée"`.
 | Notion parent page | `31b98dfff6a681298dcbe37403faca80` | |
 | Notion TODO DB | `88d1d8cb-614b-45b4-be62-e6820d8049d9` | |
 | Notion TODO data source | `collection://fd098f9f-202e-41db-9cdb-042c40cff516` | |
+| Notion AGENTS_LOG DB | `f93b807b-09a0-43af-b710-ce5e6527dd5f` | créée 2026-04-21 |
+| Notion AGENTS_LOG data source | `collection://95f813af-1e1a-4663-821a-e1dbf5abb51c` | à utiliser pour write |
 | Notion CROWNIUM CRM DB | `7bae99da` | prefix |
 | n8n host | `onlymore.app.n8n.cloud` | |
 | Gmail ops | `onlymore2024@gmail.com` | |
@@ -98,21 +100,24 @@ require_human_for:
 ## Logging obligatoire — AGENTS_LOG
 
 Toute invocation MCP et toute délégation inter-agents DOIT être logguée
-dans la Notion DB `AGENTS_LOG` avec :
+dans la Notion DB `AGENTS_LOG`
+(data source `collection://95f813af-1e1a-4663-821a-e1dbf5abb51c`) avec :
 
 | Champ | Type | Exemple |
 |---|---|---|
-| `timestamp` | ISO-8601 | 2026-04-21T09:14:22Z |
+| `action` | title | `supabase.execute_sql orders` |
+| `timestamp` | date (datetime) | 2026-04-21T09:14:22Z |
 | `agent` | select | `forge-build` |
-| `invoked_by` | select | `onlymore-ceo-agent` |
-| `action` | text | `supabase.execute_sql` |
+| `invoked_by` | select | `onlymore-ceo-agent` (ou `human`) |
 | `target` | text | `ref:isuzbpzwxcagtnbosgjl, table:orders` |
-| `scope` | select | `read / write / deploy / comm` |
-| `statut` | select | `ok / blocked / pending-human / failed` |
-| `entite` | multi-select | `COLHYBRI` |
+| `scope` | select | `read / write / deploy / comm / policy-refusal / delegate / log` |
+| `statut` | select | `ok / blocked / pending-human / failed / refused` |
+| `entite` | multi-select | `COLHYBRI / CROWNIUM / DOJUKU / FINANCE / PLUMAYA / GROUPE` |
 | `trace_id` | text | uuid-v4 |
+| `notes` | text | contexte libre (diff, reason, handoff) |
 
-Si la DB n'existe pas → `install-agents.sh` la crée.
+DB créée le 2026-04-21 sous le parent groupe par le CEO agent via
+l'install script. Si la DB disparaît → `install-agents.sh` la recrée.
 
 ## Principe de moindre privilège
 
