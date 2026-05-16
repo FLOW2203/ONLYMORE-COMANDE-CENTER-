@@ -1,0 +1,79 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "inLanguage": "en-US",
+  "about": {
+    "@type": "Organization",
+    "name": "COLHYBRI",
+    "parentOrganization": {
+      "@type": "Organization",
+      "name": "ONLYMORE Group"
+    }
+  },
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is COLHYBRI?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "COLHYBRI is a local solidarity platform created by ONLYMORE Group. Inspired by the Neapolitan tradition of caffe sospeso, it lets neighbors pool small monthly contributions to support local merchants and fund services for residents who need them. We digitize neighborhood solidarity at scale, in the spirit of 220 years of French mutualist heritage."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who can join COLHYBRI?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Two audiences can join. Members are residents who want to support their neighborhood with a monthly contribution. Merchants are local independent shops, cafes, bakeries, and service providers who want to receive new customers through the solidarity pool. Both onboard through colhybri.com after a short conversation with our team."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does COLHYBRI cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Members pay 3 euros per month (Basic plan). Merchants choose between 10 euros per month (Standard plan) or 15 euros per month (Premium Maps Plus plan, with enhanced visibility on the interactive map). All plans are billed monthly, no annual commitment, no hidden fees."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is COLHYBRI different from a loyalty app?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A loyalty app rewards individual repeat customers of one merchant. COLHYBRI is the opposite: every member contribution funds a collective pool that benefits the whole neighborhood. We are not a coupon engine, we are a mutualist solidarity infrastructure built on the 75/25 split (75 percent redistributed to the community, 25 percent for operations)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which cities or countries does COLHYBRI cover?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "COLHYBRI is headquartered in Rodilhan, Occitanie, France, and is rolling out city by city across French neighborhoods. The platform supports 13 locales to prepare international expansion, with a priority focus on Rust Belt diaspora communities in the United States. The current list of active cities is available on colhybri.com."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is COLHYBRI free for members?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. COLHYBRI is never freemium. Membership costs around 3 dollars per month (3 euros per month, billed monthly). We believe a small recurring contribution is what makes the solidarity pool real and sustainable. A free model would dilute impact and break the mutualist promise."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do merchants benefit from COLHYBRI?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Merchants receive new local customers through the solidarity pool redistribution, gain visibility on the interactive neighborhood map (Premium Maps Plus tier), and build a recurring community around their shop. The 10 euros per month Standard plan covers the basics, the 15 euros per month Premium tier adds map prominence and analytics."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I book a meeting with the COLHYBRI team?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Visit colhybri.com and click Book a meeting. You can choose a time that works for you, share whether you are joining as a member or as a merchant, and one of our team members will walk you through the onboarding and answer your questions. Most calls take under 20 minutes."
+      }
+    }
+  ]
+}
