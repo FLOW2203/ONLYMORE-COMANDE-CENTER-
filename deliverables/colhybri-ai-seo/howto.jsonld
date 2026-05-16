@@ -1,0 +1,63 @@
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to join COLHYBRI as a member or merchant",
+  "description": "Step by step guide to joining COLHYBRI, the local solidarity platform powered by ONLYMORE Group. Works for both neighborhood members and local merchants.",
+  "inLanguage": "en-US",
+  "totalTime": "PT20M",
+  "estimatedCost": {
+    "@type": "MonetaryAmount",
+    "currency": "EUR",
+    "value": "3"
+  },
+  "supply": [
+    {
+      "@type": "HowToSupply",
+      "name": "A valid email address"
+    },
+    {
+      "@type": "HowToSupply",
+      "name": "A payment method for the monthly subscription"
+    }
+  ],
+  "tool": [
+    {
+      "@type": "HowToTool",
+      "name": "Web browser or mobile device"
+    }
+  ],
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Visit colhybri.com",
+      "text": "Open colhybri.com in your browser and select your preferred language. The platform supports 13 locales, including English (en-US) for international audiences.",
+      "url": "https://www.colhybri.com/en-US"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Choose your profile",
+      "text": "Select Member if you live in a neighborhood and want to support local solidarity, or select Merchant if you run a local shop and want to receive new customers. The two paths have distinct onboarding flows."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Pick your plan",
+      "text": "Members subscribe to the Basic plan at 3 euros per month. Merchants choose between Standard (10 euros per month) or Premium Maps Plus (15 euros per month, with enhanced visibility). All plans are monthly, no annual lock-in."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Book a meeting with our team",
+      "text": "Click Book a meeting to schedule a 20 minute call with a COLHYBRI team member. We walk you through the onboarding, answer your questions about the 75/25 solidarity pool, and confirm your neighborhood activation.",
+      "url": "https://www.colhybri.com/en-US"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": "Activate your contribution and start the cycle",
+      "text": "After your call, confirm your payment method and join your neighborhood pool. Members start contributing immediately. Merchants appear on the interactive map within 48 hours and begin welcoming new community customers."
+    }
+  ]
+}
